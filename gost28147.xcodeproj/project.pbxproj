@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		660230C2292DF29100492D9A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 660230C1292DF29100492D9A /* main.cpp */; };
+		660230CA292DF33700492D9A /* gostEncryption.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 660230C8292DF33700492D9A /* gostEncryption.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		660230BE292DF29100492D9A /* gost28147 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = gost28147; sourceTree = BUILT_PRODUCTS_DIR; };
 		660230C1292DF29100492D9A /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		660230C8292DF33700492D9A /* gostEncryption.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gostEncryption.cpp; sourceTree = "<group>"; };
+		660230C9292DF33700492D9A /* gostEncryption.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = gostEncryption.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				660230C1292DF29100492D9A /* main.cpp */,
+				660230C8292DF33700492D9A /* gostEncryption.cpp */,
+				660230C9292DF33700492D9A /* gostEncryption.hpp */,
 			);
 			path = gost28147;
 			sourceTree = "<group>";
@@ -120,6 +125,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				660230C2292DF29100492D9A /* main.cpp in Sources */,
+				660230CA292DF33700492D9A /* gostEncryption.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
