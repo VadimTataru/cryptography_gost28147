@@ -117,7 +117,7 @@ void Gost_Crypt_Step(Gost_Data_Part *data, uint8_t *gostTable, uint32_t gostKey,
     uint8_t tmp;
     //N1=Lo(DATA); N2=Hi(DATA)
 
-    S.full = (uint32_t)((*data).half[GOST_Data_Part_N2_Half] + gostKey) ;//S=(N1+X)mod2^32
+    S.full = (uint32_t)((*data).half[GOST_Data_Part_N1_Half] + gostKey) ;//S=(N1+X)mod2^32
 
     for(m=0; m<(TABLE_ROW_AMOUNT/2); m++)
     {
