@@ -6,12 +6,12 @@
 //
 
 #include "gostEncryption.hpp"
-#define __MSVCRT__
 #include <stdlib.h>
 #include <stdio.h>
 #include <bit>
 #include <cstdint>
 #include <iostream>
+#include <memory.h>
 
 #define _Min(x,y)           (x > y ? y : x)
 #define _SWAPW32(W)         ((W>>24) | (W<<24) | ((W>>8)&0xFF00) | ((W<<8)&0xFF0000))
@@ -139,7 +139,7 @@ void GostCryptStep(GostDataPart *data, uint8_t *gostTable, uint32_t gostKey, boo
         gostTable += TABLE_COLUMN_AMOUNT;//next line in table
 
     }
-    S.full = (*data).half[GOST_Data_Part_N2_Half]^std::rotl(S.full, 11);//S=Rl(11,S); rol S,11 //S XOR N2
+    S.full = (*data).half[GOST_Data_Part_N2_Half]^_lrotl(S.full, 11);//S=Rl(11,S); rol S,11 //S XOR N2
     if (last)
     {
         (*data).half[GOST_Data_Part_N2_Half] = S.full; //N2=S

@@ -30,12 +30,12 @@ int main(int argc, const char * argv[]) {
     bool isDataCorrect = false;
     
     while (!isDataCorrect) {
-        std::cout << "Введите сообщение для шифрования" << std::endl;
+        std::cout << "Enter message to crypt (In English)" << std::endl;
         std::getline(std::cin, message);
         std::cout << std::endl;
         
         if(message.length() % 8 != 0) {
-            std::cout << "Длинна сообщения должна быть кратной 8 бит";
+            std::cout << "The message length must be a multiple of 8 bits";
             continue;
         }
         
@@ -43,14 +43,14 @@ int main(int argc, const char * argv[]) {
     }
     isDataCorrect = false;
     while (!isDataCorrect) {
-        std::cout << "Введите ключ шифрования" << std::endl;
+        std::cout << "Enter the encryption key (In English, length = 32)" << std::endl;
         std::getline(std::cin, key);
         std::cout << std::endl;
         
         if(key == "\n")
             key = defaultKey;
         else if(key.length() != 32) {
-            std::cout << "Длинна ключа должна быть 32 бит";
+            std::cout << "The key length must be 32 bits";
             continue;
         }
         
@@ -63,20 +63,12 @@ int main(int argc, const char * argv[]) {
     uint8_t keyBytes[32];
     memcpy(keyBytes, key.data(), key.length());
     
-    uint8_t Data_E[sizeof(messageBytes)];
-    memcpy(Data_E, messageBytes, sizeof(messageBytes));
-    
-    std::cout << "Незашифрованная последовательность байт" << std::endl;
-    for(auto &b: Data_E) {
-        std::cout << int(b) << ' ';
-    }
-    std::cout << std::endl;
-    std::cout << std::endl;
+    uint8_t Data_E[sizeof(messageBytes)];   
     
     memcpy(Data_E, messageBytes, sizeof(messageBytes));
     GostEncrypt(Data_E, uint32_t(sizeof(messageBytes)), Encrypt, GostTable, keyBytes);
     
-    std::cout << "Зашифрованная последовательность байт" << std::endl;
+    std::cout << "Encrypted byte sequence" << std::endl;
     for(auto &b: Data_E) {
         std::cout << int(b) << ' ';
     }
@@ -85,12 +77,15 @@ int main(int argc, const char * argv[]) {
     
     GostEncrypt(Data_E, uint32_t(sizeof(Data_E)), Decrypt, GostTable, keyBytes);
     
-    std::cout << "Расшифрованное сообщение" << std::endl;
+    std::cout << "Decrypted message" << std::endl;
     
     for(auto &b: Data_E) {
         std::cout << b;
     }
     std::cout << std::endl;
+
+    std::cout << "You can close the program now! Press any key!";
+    std::cin.get();
     
     return 0;
 }
