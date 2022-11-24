@@ -16,16 +16,26 @@
 #define _Min(x,y)           (x > y ? y : x)
 #define _SWAPW32(W)         ((W>>24) | (W<<24) | ((W>>8)&0xFF00) | ((W<<8)&0xFF0000))
 
-void Gost_Crypt_Step(Gost_Data_Part *data, uint8_t *gostTable, uint32_t gostKey, bool Last);
+/**
+@details GostCryptStep
+Выполняет простейший шаг криптопреобразования(шифрования и расшифрования) ГОСТ28147-89
+@param data - Указатель на данные для зашифрования в формате GOST_Data_Part
+@param gostTable - Указатель на таблицу замены
+@param gostKey - 32хбитная часть ключа.
+@param last - Является ли шаг криптопреобразования последним? Если да(true)-
+результат будет занесен в 32х битный накопитель  N2, в противном случае предыдущие значение N1
+сохраняется в N2, а результат работы будет занесен в накопитель N1.
+*/
+void GostCryptStep(GostDataPart *data, uint8_t *gostTable, uint32_t gostKey, bool last);
 
 uint8_t GostEncrypt(uint8_t *data, uint32_t size, CryptMode mode, uint8_t *gostTable, uint8_t *gostKey) {
     
     uint8_t currentPartSize;
-    Gost_Data_Part dataPart;
+    GostDataPart dataPart;
     uint32_t *keyPart = (uint32_t *) gostKey;
     
     while (size != 0) {
-        currentPartSize = _Min(sizeof(Gost_Data_Part), size);
+        currentPartSize = _Min(sizeof(GostDataPart), size);
         memset(&dataPart, GOST_DEFAULT_Byte, sizeof(dataPart));
         memcpy(&dataPart, data, currentPartSize);
         
@@ -48,7 +58,7 @@ uint8_t GostEncrypt(uint8_t *data, uint32_t size, CryptMode mode, uint8_t *gostT
     return 0;
 }
 
-void GostCryptCicleE(Gost_Data_Part *data, uint8_t *gostTable, uint32_t *gostKey){
+void GostCryptCicleE(GostDataPart *data, uint8_t *gostTable, uint32_t *gostKey){
     uint8_t k,j;
     uint32_t *tempKey = gostKey;
 //Key rotation:
@@ -58,7 +68,7 @@ void GostCryptCicleE(Gost_Data_Part *data, uint8_t *gostTable, uint32_t *gostKey
     {
         for (j=0;j<8;j++)
         {
-            Gost_Crypt_Step(data, gostTable, *gostKey, false);
+            GostCryptStep(data, gostTable, *gostKey, false);
             gostKey++;
         }
         gostKey = tempKey;
@@ -68,20 +78,20 @@ void GostCryptCicleE(Gost_Data_Part *data, uint8_t *gostTable, uint32_t *gostKey
 
     for (j=0;j<7;j++)
     {
-        Gost_Crypt_Step(data, gostTable, *gostKey, false);
+        GostCryptStep(data, gostTable, *gostKey, false);
         gostKey--;
     }
-    Gost_Crypt_Step(data, gostTable, *gostKey, true);
+    GostCryptStep(data, gostTable, *gostKey, true);
 }
 
-void GostCryptCicleD(Gost_Data_Part *data, uint8_t *gostTable, uint32_t *gostKey)
+void GostCryptCicleD(GostDataPart *data, uint8_t *gostTable, uint32_t *gostKey)
 {
     uint8_t k,j;
 //Key rotation:
 //K0,K1,K2,K3,K4,K5,K6,K7, K7,K6,K5,K4,K3,K2,K1,K0, K7,K6,K5,K4,K3,K2,K1,K0, K7,K6,K5,K4,K3,K2,K1,K0
     for (j=0;j<8;j++)
     {
-        Gost_Crypt_Step(data, gostTable, *gostKey, false) ;
+        GostCryptStep(data, gostTable, *gostKey, false) ;
         gostKey++;
     }
 //GOST_Key offset =  GOST_Key + _GOST_32_3P_CICLE_ITERS_J
@@ -90,29 +100,29 @@ void GostCryptCicleD(Gost_Data_Part *data, uint8_t *gostTable, uint32_t *gostKey
         for (j=0;j<8;j++)
         {
             gostKey--;
-            Gost_Crypt_Step(data, gostTable, *gostKey, false) ;
+            GostCryptStep(data, gostTable, *gostKey, false) ;
         }
         gostKey+=8;
     }
     for (j=0;j<7;j++)
     {
         gostKey--;
-        Gost_Crypt_Step(data, gostTable, *gostKey, false) ;
+        GostCryptStep(data, gostTable, *gostKey, false) ;
     }
     gostKey--;
-    Gost_Crypt_Step(data, gostTable, *gostKey, true) ;
+    GostCryptStep(data, gostTable, *gostKey, true) ;
 
 }
 
 
-void Gost_Crypt_Step(Gost_Data_Part *data, uint8_t *gostTable, uint32_t gostKey, bool Last)
+void GostCryptStep(GostDataPart *data, uint8_t *gostTable, uint32_t gostKey, bool last)
 {
     typedef  union
     {
         uint32_t full;
         uint8_t parts[TABLE_ROW_AMOUNT / 2];
-    } GOST_Data_Part_sum;
-    GOST_Data_Part_sum S;
+    } GOSTDataPartSum;
+    GOSTDataPartSum S;
     uint8_t m;
     uint8_t tmp;
     //N1=Lo(DATA); N2=Hi(DATA)
@@ -130,7 +140,7 @@ void Gost_Crypt_Step(Gost_Data_Part *data, uint8_t *gostTable, uint32_t gostKey,
 
     }
     S.full = (*data).half[GOST_Data_Part_N2_Half]^std::rotl(S.full, 11);//S=Rl(11,S); rol S,11 //S XOR N2
-    if (Last)
+    if (last)
     {
         (*data).half[GOST_Data_Part_N2_Half] = S.full; //N2=S
     }else
