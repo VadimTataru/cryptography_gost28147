@@ -27,27 +27,34 @@ std::string defaultKey = "that_key_can_help_you_to_hide_ms";
 int main(int argc, const char * argv[]) {
     std::string message;
     std::string key;
+    bool isDataCorrect = false;
     
-    
-    std::cout << "Введите сообщение для шифрования" << std::endl;
-    std::getline(std::cin, message);
-    std::cout << std::endl;
-    
-    if(message.length() % 8 != 0) {
-        std::cout << "Длинна сообщения должна быть кратной 8 бит";
-        //continue;
-    }
+    while (!isDataCorrect) {
+        std::cout << "Введите сообщение для шифрования" << std::endl;
+        std::getline(std::cin, message);
+        std::cout << std::endl;
         
-    
-    std::cout << "Введите ключ шифрования" << std::endl;
-    std::getline(std::cin, key);
-    std::cout << std::endl;
-    
-    if(key == "\n")
-        key = defaultKey;
-    else if(key.length() != 32) {
-        std::cout << "Длинна ключа должна быть 32 бит";
-        //continue;
+        if(message.length() % 8 != 0) {
+            std::cout << "Длинна сообщения должна быть кратной 8 бит";
+            continue;
+        }
+        
+        isDataCorrect = true;
+    }
+    isDataCorrect = false;
+    while (!isDataCorrect) {
+        std::cout << "Введите ключ шифрования" << std::endl;
+        std::getline(std::cin, key);
+        std::cout << std::endl;
+        
+        if(key == "\n")
+            key = defaultKey;
+        else if(key.length() != 32) {
+            std::cout << "Длинна ключа должна быть 32 бит";
+            continue;
+        }
+        
+        isDataCorrect = true;
     }
     
     uint8_t messageBytes[message.length()];
